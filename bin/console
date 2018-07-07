@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "jekyll/gists/meta"
+
+# (to use this, add pry to the Gemfile)
+# require "pry"
+# Pry.start
+
+require "irb"
+IRB.start(__FILE__)
