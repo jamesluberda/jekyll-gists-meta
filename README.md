@@ -41,8 +41,7 @@ The plugin will run when the server is started and create a JSON data file, `gis
 
 Once the datafile is populated, you may access its contents within Jekyll using Liquid. For example, to list all gists in the file and linkify them:
 
-{% raw %}
-```
+```liquid
 {% if site.data.gists-meta-data %}
   <section>
     <h2>Gists</h2>
@@ -56,7 +55,6 @@ Once the datafile is populated, you may access its contents within Jekyll using 
   </section>
 {% endif %}
 ```
-{% endraw %}
 
 ## Contributing
 
