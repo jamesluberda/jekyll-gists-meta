@@ -26,39 +26,39 @@ module Jekyll
         end
 
         private
+
         def validate_environment(site)
           if ENV["JEKYLL_GITHUB_TOKEN"].to_s.empty?
             raise NoTokenError, "No GitHub Token found. Cannot query the API. " \
-              "Specify JEKYLL_GITHUB_TOKEN in environment."
+                                "Specify JEKYLL_GITHUB_TOKEN in environment."
           end
           unless Dir.exist?(site.config["data_dir"])
             raise NoDataDirError, "Data directory does not exist. Jekyll reports " \
-              "directory should be: #{site.config["data_dir"]}."
+                                  "directory should be: #{site.config["data_dir"]}."
           end
         end
 
-        private
         def fetch_data(query)
           url = "https://api.github.com/graphql"
           uri = URI(url)
           Net::HTTP.start(uri.host, uri.port,
-            :use_ssl => uri.scheme == "https",
-            :read_timeout => 3, :open_timeout => 3) do |http|
-              request = Net::HTTP::Post.new uri.to_s
-              request.add_field "Authorization", "bearer #{ENV["JEKYLL_GITHUB_TOKEN"]}"
-              request.body = query
-              response = http.request(request)
-              response.body
-            end
+                          :use_ssl => uri.scheme == "https",
+                          :read_timeout => 3, :open_timeout => 3) do |http|
+                            request = Net::HTTP::Post.new uri.to_s
+                            request.add_field "Authorization", \
+                                              "bearer #{ENV["JEKYLL_GITHUB_TOKEN"]}"
+                            request.body = query
+                            response = http.request(request)
+                            response.body
+                          end
         rescue Timeout::Error, SocketError, Net::HTTPError
           nil
         end
 
-        private
         # rubocop:disable Metrics/MethodLength
         def build_gists_query(site)
           user = find_user(site)
-          query = +<<-EOS
+          query = +<<-ENDQUERY
             {
               "query":  "query {
                 user (login: #{user} ) {
@@ -83,26 +83,11 @@ module Jekyll
                 }
               }"
             }
-          EOS
+          ENDQUERY
           query.tr!("\n", " ").freeze
         end
         # rubocop:enable Metrics/MethodLength
 
-        private
-        def build_user_query
-          query = +<<-EOS
-            {
-              "query": "query {
-                viewer {
-                  login
-                }
-              }"
-            }
-          EOS
-          query.tr!("\n", " ").freeze
-        end
-
-        private
         # rubocop:disable Style/MultilineTernaryOperator
         def find_user(site)
           site.config["gists_user"] || \
@@ -110,8 +95,8 @@ module Jekyll
             site.config["github"]["contributors"][0]["login"] : nil) || \
             proc do
               raise NoUserError, "No user name found. " \
-                "Specify using 'gists_user' in your configuration, " \
-                "or ensure the github-metadata gem is installed. "
+                                 "Specify using 'gists_user' in your configuration, " \
+                                 "or ensure the github-metadata gem is installed. "
             end.call
         end
         # rubocop:enable Style/MultilineTernaryOperator
@@ -122,6 +107,6 @@ end
 
 Jekyll::Hooks.register :site, :after_init, :priority => :low do |site|
   Jekyll.logger.debug "Jekyll-Gists-Meta:", \
-    "Generating gists data file in #{site.config["data_dir"]}"
+                      "Generating gists data file in #{site.config["data_dir"]}"
   Jekyll::Gists::Meta.generate(site)
 end

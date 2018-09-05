@@ -48,7 +48,7 @@ Once the datafile is populated, you may access its contents within Jekyll using 
     <ul>
       {% for myedge in site.data.gists-meta-data.data.user.gists.edges %}
         <li>
-          <a href="https://gist.github.com/{{ myedge.node.name }}">{{myedge.node.description}}</a>
+          <a href="https://gist.github.com/{{ myedge.node.name }}">{{ myedge.node.description }}</a>
         </li>
       {% endfor %}
     </ul>
